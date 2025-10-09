@@ -61,6 +61,13 @@ public class Jack extends OpMode
     private DcMotor RBMotor = null;
     private DcMotor LFMotor = null;
     private DcMotor RFMotor = null;
+
+    // The motors for the ball throwing fuckshit thing
+    // TODO: Read documentation to change to ideal motor for speed
+    private DcMotor pickUp = null;
+    // You are not allowed to judge I am sleep deprived
+    private DcMotor rightPelvis = null;
+    private DcMotor leftPelvis = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -75,6 +82,13 @@ public class Jack extends OpMode
         RBMotor  = hardwareMap.get(DcMotor.class, "RBMotor");
         LFMotor  = hardwareMap.get(DcMotor.class, "LFMotor");
         RFMotor  = hardwareMap.get(DcMotor.class, "RFMotor");
+
+        // Initializing the Motors to the correct entry
+        pickUp = hardwareMap.get(DcMotor.class,"pickUp");
+        rightPelvis = hardwareMap.get(DcMotor.class, "rightPelvis");
+        leftPelvis = hardwareMap.get(DcMotor.class, "leftPelvis");
+
+        // TODO: set up the motors with forward and reverse
 
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -123,6 +137,8 @@ public class Jack extends OpMode
 
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
+        // TODO: Set up PID for accurate movement
+        // TODO: Set up classes for everything
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
         double crab = gamepad1.left_stick_x;
