@@ -65,6 +65,8 @@ public class Jack extends OpMode
     // The motors for the ball throwing fuckshit thing
     // TODO: Read documentation to change to ideal motor for speed
     private DcMotor pickUp = null;
+    private DcMotor launch = null;
+
     // You are not allowed to judge I am sleep deprived
     private DcMotor rightPelvis = null;
     private DcMotor leftPelvis = null;
@@ -87,6 +89,8 @@ public class Jack extends OpMode
         pickUp = hardwareMap.get(DcMotor.class,"pickUp");
         rightPelvis = hardwareMap.get(DcMotor.class, "rightPelvis");
         leftPelvis = hardwareMap.get(DcMotor.class, "leftPelvis");
+        launch = hardwareMap.get(DcMotor.class, "launch");
+
 
         // TODO: set up the motors with forward and reverse
 
@@ -98,6 +102,15 @@ public class Jack extends OpMode
         RBMotor.setDirection(DcMotor.Direction.REVERSE);
         LFMotor.setDirection(DcMotor.Direction.REVERSE);
         RFMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        // Directions for the thorughing motors
+        leftPelvis.setDirection(DcMotor.Direction.REVERSE);
+        rightPelvis.setDirection(DcMotor.Direction.REVERSE);
+        launch.setDirection(DcMotor.Direction.FORWARD);
+        pickUp.setDirection(DcMotor.Direction.FORWARD);
+
+
+
 
 
 
@@ -131,9 +144,25 @@ public class Jack extends OpMode
         double LFPower;
         double RFPower;
 
+        // Declaring power for the pushy thing
+        double pushPower;
+
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
+        // TODO: Fix this stupid disgusting bullshit code
+        if (gamepad1.dpad_up){
+            pushPower = 1;
+        } else if (gamepad1.dpad_down){
+            pushPower = -1;
+        } else {
+            pushPower = 0;
+        }
+
+        pickUp.setPower(pushPower);
+        launch.setPower(pushPower);
+        rightPelvis.setPower(pushPower);
+        leftPelvis.setPower(pushPower);
 
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
