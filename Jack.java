@@ -62,7 +62,7 @@ public class Jack extends OpMode
     private DcMotor LFMotor = null;
     private DcMotor RFMotor = null;
 
-    // The motors for the ball throwing fuckshit thing
+    // The motors for the ball throwing bloody thing
     // TODO: Read documentation to change to ideal motor for speed
     private DcMotor pickUp = null;
     private DcMotor launch = null;
@@ -145,48 +145,60 @@ public class Jack extends OpMode
         double RFPower;
 
         // Declaring power for the pushy thing
-        double pushPower;
+        double outtakePower;
+        double intakePower;
+
+        double drive = -gamepad1.left_stick_y;
+        double strafe_left = gamepad1.left_trigger;
+        double strafe_right = gamepad1.right_trigger;
+
+        double twist = gamepad1.right_stick_x;
 
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
         // TODO: Fix this stupid disgusting bullshit code
-        if (gamepad1.dpad_up){
-            pushPower = 1;
-        } else if (gamepad1.dpad_down){
-            pushPower = -1;
+        if (gamepad2.left_stick_y > 0.1){
+            outtakePower = -(gamepad2.left_stick_y);
+        } else if (gamepad2.left_stick_y < -0.1){
+            outtakePower = -(gamepad2.left_stick_y);
         } else {
-            pushPower = 0;
+            outtakePower = 0;
         }
 
-        pickUp.setPower(pushPower);
-        launch.setPower(pushPower);
-        rightPelvis.setPower(pushPower);
-        leftPelvis.setPower(pushPower);
+        //separate intake from outake
+        if (gamepad2.right_stick_y > 0.1) {
+            intakePower = -gamepad2.right_stick_y;
+        } else if (gamepad2.right_stick_y < -0.1) {
+            intakePower = -gamepad2.right_stick_y;
+        } else {
+            intakePower = 0;
+        }
+
+        pickUp.setPower(intakePower);
+        launch.setPower(outtakePower);
+        rightPelvis.setPower(outtakePower);
+        leftPelvis.setPower(outtakePower);
 
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
         // TODO: Set up PID for accurate movement
         // TODO: Set up classes for everything
-        double drive = -gamepad1.left_stick_y;
-        double turn  =  gamepad1.right_stick_x;
-        double crab = gamepad1.left_stick_x;
-        LBPower    = drive + turn - crab;
-        LFPower    = drive + turn + crab;
-        RBPower   = drive - turn - crab;
-        RFPower   = drive - turn + crab;
-
 
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
         // leftPower  = -gamepad1.left_stick_y ;
         // rightPower = -gamepad1.right_stick_y ;
+        LFPower = drive + strafe_left + strafe_right + twist;
+        RFPower = drive - strafe_left - strafe_right - twist;
+        LBPower = drive - strafe_left - strafe_right + twist;
+        RBPower = drive + strafe_left + strafe_right - twist;
 
-        // Send calculated power to wheels
-        LBMotor.setPower(LBPower);
-        RBMotor.setPower(RBPower);
         LFMotor.setPower(LFPower);
         RFMotor.setPower(RFPower);
+        LBMotor.setPower(LBPower);
+        RBMotor.setPower(RBPower);
+
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
