@@ -61,6 +61,15 @@ public class Jack extends OpMode
     private DcMotor RBMotor = null;
     private DcMotor LFMotor = null;
     private DcMotor RFMotor = null;
+
+    // The motors for the ball throwing bloody thing
+    // TODO: Read documentation to change to ideal motor for speed
+    private DcMotor pickUp = null;
+    private DcMotor launch = null;
+
+    // You are not allowed to judge I am sleep deprived
+    private DcMotor rightPelvis = null;
+    private DcMotor leftPelvis = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -76,6 +85,15 @@ public class Jack extends OpMode
         LFMotor  = hardwareMap.get(DcMotor.class, "LFMotor");
         RFMotor  = hardwareMap.get(DcMotor.class, "RFMotor");
 
+        // Initializing the Motors to the correct entry
+        pickUp = hardwareMap.get(DcMotor.class,"pickUp");
+        rightPelvis = hardwareMap.get(DcMotor.class, "rightPelvis");
+        leftPelvis = hardwareMap.get(DcMotor.class, "leftPelvis");
+        launch = hardwareMap.get(DcMotor.class, "launch");
+
+
+        // TODO: set up the motors with forward and reverse
+
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -84,6 +102,15 @@ public class Jack extends OpMode
         RBMotor.setDirection(DcMotor.Direction.REVERSE);
         LFMotor.setDirection(DcMotor.Direction.REVERSE);
         RFMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        // Directions for the thorughing motors
+        leftPelvis.setDirection(DcMotor.Direction.REVERSE);
+        rightPelvis.setDirection(DcMotor.Direction.REVERSE);
+        launch.setDirection(DcMotor.Direction.FORWARD);
+        pickUp.setDirection(DcMotor.Direction.FORWARD);
+
+
+
 
 
 
@@ -117,31 +144,61 @@ public class Jack extends OpMode
         double LFPower;
         double RFPower;
 
+        // Declaring power for the pushy thing
+        double outtakePower;
+        double intakePower;
+
+        double drive = -gamepad1.left_stick_y;
+        double strafe_left = gamepad1.left_trigger;
+        double strafe_right = gamepad1.right_trigger;
+
+        double twist = gamepad1.right_stick_x;
+
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
+        // TODO: Fix this stupid disgusting bullshit code
+        if (gamepad2.left_stick_y > 0.1){
+            outtakePower = -(gamepad2.left_stick_y);
+        } else if (gamepad2.left_stick_y < -0.1){
+            outtakePower = -(gamepad2.left_stick_y);
+        } else {
+            outtakePower = 0;
+        }
+
+        //separate intake from outake
+        if (gamepad2.right_stick_y > 0.1) {
+            intakePower = -gamepad2.right_stick_y;
+        } else if (gamepad2.right_stick_y < -0.1) {
+            intakePower = -gamepad2.right_stick_y;
+        } else {
+            intakePower = 0;
+        }
+
+        pickUp.setPower(intakePower);
+        launch.setPower(outtakePower);
+        rightPelvis.setPower(outtakePower);
+        leftPelvis.setPower(outtakePower);
 
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
-        double drive = -gamepad1.left_stick_y;
-        double turn  =  gamepad1.right_stick_x;
-        double crab = gamepad1.left_stick_x;
-        LBPower    = drive + turn - crab;
-        LFPower    = drive + turn + crab;
-        RBPower   = drive - turn - crab;
-        RFPower   = drive - turn + crab;
-
+        // TODO: Set up PID for accurate movement
+        // TODO: Set up classes for everything
 
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
         // leftPower  = -gamepad1.left_stick_y ;
         // rightPower = -gamepad1.right_stick_y ;
+        LFPower = drive + strafe_left + strafe_right + twist;
+        RFPower = drive - strafe_left - strafe_right - twist;
+        LBPower = drive - strafe_left - strafe_right + twist;
+        RBPower = drive + strafe_left + strafe_right - twist;
 
-        // Send calculated power to wheels
-        LBMotor.setPower(LBPower);
-        RBMotor.setPower(RBPower);
         LFMotor.setPower(LFPower);
         RFMotor.setPower(RFPower);
+        LBMotor.setPower(LBPower);
+        RBMotor.setPower(RBPower);
+
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
