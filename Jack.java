@@ -104,15 +104,16 @@ public class Jack extends OpMode
         RFMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Directions for the thorughing motors
-        leftPelvis.setDirection(DcMotor.Direction.REVERSE);
+        leftPelvis.setDirection(DcMotor.Direction.FORWARD);
         rightPelvis.setDirection(DcMotor.Direction.REVERSE);
-        launch.setDirection(DcMotor.Direction.FORWARD);
+        launch.setDirection(DcMotor.Direction.REVERSE);
         pickUp.setDirection(DcMotor.Direction.FORWARD);
 
+        rightPelvis.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftPelvis.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
-
-
+        rightPelvis.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftPelvis.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -147,11 +148,12 @@ public class Jack extends OpMode
         // Declaring power for the pushy thing
         double outtakePower;
         double intakePower;
+        double launchPower = gamepad2.right_trigger - gamepad2.left_trigger;
+
 
         double drive = -gamepad1.left_stick_y;
-        double strafe_left = gamepad1.left_trigger;
-        double strafe_right = gamepad1.right_trigger;
-
+        double strafe = gamepad1.right_trigger - gamepad1.left_trigger;
+        //double strafe = gamepad1.left_stick_x;
         double twist = gamepad1.right_stick_x;
 
 
@@ -175,6 +177,7 @@ public class Jack extends OpMode
             intakePower = 0;
         }
 
+
         pickUp.setPower(intakePower);
         launch.setPower(outtakePower);
         rightPelvis.setPower(outtakePower);
@@ -189,10 +192,11 @@ public class Jack extends OpMode
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
         // leftPower  = -gamepad1.left_stick_y ;
         // rightPower = -gamepad1.right_stick_y ;
-        LFPower = drive + strafe_left + strafe_right + twist;
-        RFPower = drive - strafe_left - strafe_right - twist;
-        LBPower = drive - strafe_left - strafe_right + twist;
-        RBPower = drive + strafe_left + strafe_right - twist;
+        LFPower = Range.clip(drive + strafe + twist, -1.0, 1.0);
+        RFPower = Range.clip(drive - strafe - twist, -1.0, 1.0);
+        LBPower = Range.clip(drive - strafe + twist, -1.0, 1.0);
+        RBPower = Range.clip(drive + strafe - twist, -1.0, 1.0);
+
 
         LFMotor.setPower(LFPower);
         RFMotor.setPower(RFPower);
@@ -202,7 +206,8 @@ public class Jack extends OpMode
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", LBPower, RBPower, LFPower, RFPower );
+        telemetry.addData("Motors", "LB: %.2f | RB: %.2f | LF: %.2f | RF: %.2f", LBPower, RBPower, LFPower, RFPower);
+
     }
 
     /*
