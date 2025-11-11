@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -65,11 +66,11 @@ public class Jack extends OpMode
     // The motors for the ball throwing bloody thing
     // TODO: Read documentation to change to ideal motor for speed
     private DcMotor pickUp = null;
-    private DcMotor launch = null;
+    private DcMotorEx launch = null;
 
     // You are not allowed to judge I am sleep deprived
-    private DcMotor rightPelvis = null;
-    private DcMotor leftPelvis = null;
+    private DcMotorEx rightPelvis = null;
+    private DcMotorEx leftPelvis = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -87,9 +88,9 @@ public class Jack extends OpMode
 
         // Initializing the Motors to the correct entry
         pickUp = hardwareMap.get(DcMotor.class,"pickUp");
-        rightPelvis = hardwareMap.get(DcMotor.class, "rightPelvis");
-        leftPelvis = hardwareMap.get(DcMotor.class, "leftPelvis");
-        launch = hardwareMap.get(DcMotor.class, "launch");
+        rightPelvis = hardwareMap.get(DcMotorEx.class, "rightPelvis");
+        leftPelvis = hardwareMap.get(DcMotorEx.class, "leftPelvis");
+        launch = hardwareMap.get(DcMotorEx.class, "launch");
 
 
         // TODO: set up the motors with forward and reverse
@@ -103,17 +104,24 @@ public class Jack extends OpMode
         LFMotor.setDirection(DcMotor.Direction.REVERSE);
         RFMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        // Directions for the thorughing motors
-        leftPelvis.setDirection(DcMotor.Direction.FORWARD);
-        rightPelvis.setDirection(DcMotor.Direction.REVERSE);
-        launch.setDirection(DcMotor.Direction.REVERSE);
-        pickUp.setDirection(DcMotor.Direction.FORWARD);
+        // Directions for the throwing motors
+        leftPelvis.setDirection(DcMotorEx.Direction.REVERSE);
+        rightPelvis.setDirection(DcMotorEx.Direction.FORWARD);
+        launch.setDirection(DcMotorEx.Direction.REVERSE);
+        pickUp.setDirection(DcMotor.Direction.REVERSE);
 
-        rightPelvis.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftPelvis.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        rightPelvis.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftPelvis.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftPelvis.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightPelvis.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        leftPelvis.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightPelvis.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        launch.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        launch.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        leftPelvis.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightPelvis.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        launch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -146,42 +154,49 @@ public class Jack extends OpMode
         double RFPower;
 
         // Declaring power for the pushy thing
-        double outtakePower;
+        double outtakePower = -gamepad2.left_stick_y;
         double intakePower;
-        double launchPower = gamepad2.right_trigger - gamepad2.left_trigger;
+
+
+        double pelvisInput = gamepad2.left_stick_y;
+
+            // Scale to your desired maximum velocity
+            double maxPelvisVelocity = 2500; // This is now your actual max speed
+            double maxLaunchVelocity = 1500;
+            double targetVelocity = pelvisInput * maxPelvisVelocity;
+            double targetVelocityCenter = pelvisInput * maxPelvisVelocity;
+
+
+            leftPelvis.setVelocity(targetVelocity);
+            rightPelvis.setVelocity(targetVelocity);
+
+
+
+
+
+
 
 
         double drive = -gamepad1.left_stick_y;
         double strafe = gamepad1.right_trigger - gamepad1.left_trigger;
-        //double strafe = gamepad1.left_stick_x;
+        //double strafe = gamepad1.left_stick_x;`
         double twist = gamepad1.right_stick_x;
-
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
         // TODO: Fix this stupid disgusting bullshit code
-        if (gamepad2.left_stick_y > 0.1){
-            outtakePower = -(gamepad2.left_stick_y);
-        } else if (gamepad2.left_stick_y < -0.1){
-            outtakePower = -(gamepad2.left_stick_y);
-        } else {
-            outtakePower = 0;
-        }
 
-        //separate intake from outake
-        if (gamepad2.right_stick_y > 0.1) {
-            intakePower = -gamepad2.right_stick_y;
-        } else if (gamepad2.right_stick_y < -0.1) {
-            intakePower = -gamepad2.right_stick_y;
-        } else {
-            intakePower = 0;
-        }
 
+
+
+
+
+        //separate intake from outtake
+        intakePower = -gamepad2.right_stick_y;
 
         pickUp.setPower(intakePower);
-        launch.setPower(outtakePower);
-        rightPelvis.setPower(outtakePower);
-        leftPelvis.setPower(outtakePower);
+        launch.setVelocity(targetVelocityCenter);
+
 
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
