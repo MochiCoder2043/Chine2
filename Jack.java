@@ -149,7 +149,7 @@ public class Jack extends OpMode
         double intakePower;
 
         double drive = -gamepad1.left_stick_y;
-        double strafe_left = gamepad1.left_trigger;
+        double strafe_left = -gamepad1.left_trigger;
         double strafe_right = gamepad1.right_trigger;
 
         double twist = gamepad1.right_stick_x;
