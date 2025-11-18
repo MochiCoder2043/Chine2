@@ -81,16 +81,16 @@ public class Jack extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        LBMotor  = hardwareMap.get(DcMotor.class, "LBMotor");
-        RBMotor  = hardwareMap.get(DcMotor.class, "RBMotor");
-        LFMotor  = hardwareMap.get(DcMotor.class, "LFMotor");
-        RFMotor  = hardwareMap.get(DcMotor.class, "RFMotor");
+        LBMotor  = hardwareMap.get(DcMotor.class, "e2");
+        RBMotor  = hardwareMap.get(DcMotor.class, "c2");
+        LFMotor  = hardwareMap.get(DcMotor.class, "e3");
+        RFMotor  = hardwareMap.get(DcMotor.class, "c3");
 
         // Initializing the Motors to the correct entry
-        pickUp = hardwareMap.get(DcMotor.class,"pickUp");
-        rightPelvis = hardwareMap.get(DcMotorEx.class, "rightPelvis");
-        leftPelvis = hardwareMap.get(DcMotorEx.class, "leftPelvis");
-        launch = hardwareMap.get(DcMotorEx.class, "launch");
+        pickUp = hardwareMap.get(DcMotor.class,"c1");
+        rightPelvis = hardwareMap.get(DcMotorEx.class, "c0");
+        leftPelvis = hardwareMap.get(DcMotorEx.class, "e0");
+        launch = hardwareMap.get(DcMotorEx.class, "e1");
 
 
         // TODO: set up the motors with forward and reverse
@@ -157,7 +157,6 @@ public class Jack extends OpMode
         double outtakePower = -gamepad2.left_stick_y;
         double intakePower;
 
-
         double pelvisInput = gamepad2.left_stick_y;
 
             // Scale to your desired maximum velocity
@@ -170,26 +169,13 @@ public class Jack extends OpMode
             leftPelvis.setVelocity(targetVelocity);
             rightPelvis.setVelocity(targetVelocity);
 
-
-
-
-
-
-
-
         double drive = -gamepad1.left_stick_y;
         double strafe = gamepad1.right_trigger - gamepad1.left_trigger;
-        //double strafe = gamepad1.left_stick_x;`
         double twist = gamepad1.right_stick_x;
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
         // TODO: Fix this stupid disgusting bullshit code
-
-
-
-
-
 
         //separate intake from outtake
         intakePower = -gamepad2.right_stick_y;
