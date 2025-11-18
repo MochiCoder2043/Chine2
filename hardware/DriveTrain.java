@@ -42,9 +42,11 @@ public class DriveTrain {
 
     public String getStatus() {
         return String.format(
-                "LF: %.0f | RF: %.0f",
+                "LeftFront: %.0f | LeftBack: %.0f | RightFront: %.0f | RightBack: %.0f",
                 leftFront.getVelocity(),
-                rightFront.getVelocity()
+                leftBack.getVelocity(),
+                rightFront.getVelocity(),
+                rightBack.getVelocity()
         );
     }
 }
