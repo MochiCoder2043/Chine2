@@ -4,15 +4,18 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.AprilTagDetector;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Pelvis;
+
 
 @TeleOp(name="Jack", group="Iterative OpMode")
 public class Jack extends OpMode {
 
     private DriveTrain drive = new DriveTrain();
     private Pelvis pelvis = new Pelvis();
-
+    AprilTagDetector detector = new AprilTagDetector();
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -20,6 +23,7 @@ public class Jack extends OpMode {
 
         drive.init(hardwareMap);
         pelvis.init(hardwareMap);
+        detector.init(hardwareMap);
         telemetry.addLine("DriveTrain initialized");
 
     }
@@ -44,10 +48,21 @@ public class Jack extends OpMode {
 
         drive.drive(power, strafe, twist);
         pelvis.launch(pelvisInput, intakePower);
+        AprilTagDetector.TagResult tag = detector.getResult();
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Drive", drive.getStatus());
         telemetry.addData("Pelvis", pelvis.getStatus());
+        // april tag data
+        telemetry.addData("Found", tag.found);
+        telemetry.addData("ID", tag.id);
+        telemetry.addData("X", tag.x);
+        telemetry.addData("Y", tag.y);
+        telemetry.addData("Z", tag.z);
+        telemetry.addData("Yaw", tag.yaw);
+        telemetry.addData("Pitch", tag.pitch);
+        telemetry.addData("Roll", tag.roll);
+
         telemetry.update();
 
     }
