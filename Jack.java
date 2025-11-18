@@ -56,72 +56,68 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name="Jack", group="Iterative OpMode")
 public class Jack extends OpMode
 {
-    // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor LBMotor = null;
-    private DcMotor RBMotor = null;
-    private DcMotor LFMotor = null;
-    private DcMotor RFMotor = null;
+        // Declare OpMode members.
+        private ElapsedTime runtime = new ElapsedTime();
+        private DcMotorEx LBMotor = null;
+        private DcMotorEx RBMotor = null;
+        private DcMotorEx LFMotor = null;
+        private DcMotorEx RFMotor = null;
 
-    // The motors for the ball throwing bloody thing
-    // TODO: Read documentation to change to ideal motor for speed
-    private DcMotor pickUp = null;
-    private DcMotorEx launch = null;
+        // The motors for the ball throwing bloody thing
+        // TODO: Read documentation to change to ideal motor for speed
+        private DcMotor pickUp = null;
+        private DcMotorEx launch = null;
 
-    // You are not allowed to judge I am sleep deprived
-    private DcMotorEx rightPelvis = null;
-    private DcMotorEx leftPelvis = null;
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
-    @Override
-    public void init() {
-        telemetry.addData("Status", "Initialized");
+        // You are not allowed to judge I am sleep deprived
+        private DcMotorEx rightPelvis = null;
+        private DcMotorEx leftPelvis = null;
+        /*
+         * Code to run ONCE when the driver hits INIT
+         */
+        @Override
+        public void init() {
+                telemetry.addData("Status", "Initialized");
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        LBMotor  = hardwareMap.get(DcMotor.class, "LBMotor");
-        RBMotor  = hardwareMap.get(DcMotor.class, "RBMotor");
-        LFMotor  = hardwareMap.get(DcMotor.class, "LFMotor");
-        RFMotor  = hardwareMap.get(DcMotor.class, "RFMotor");
+                // Initialize the hardware variables. Note that the strings used here as parameters
+                // to 'get' must correspond to the names assigned during the robot configuration
+                // step (using the FTC Robot Controller app on the phone).
+                LBMotor  = hardwareMap.get(DcMotorEx.class, "LBMotor");
+                RBMotor  = hardwareMap.get(DcMotorEx.class, "RBMotor");
+                LFMotor  = hardwareMap.get(DcMotorEx.class, "LFMotor");
+                RFMotor  = hardwareMap.get(DcMotorEx.class, "RFMotor");
 
-        // Initializing the Motors to the correct entry
-        pickUp = hardwareMap.get(DcMotor.class,"pickUp");
-        rightPelvis = hardwareMap.get(DcMotorEx.class, "rightPelvis");
-        leftPelvis = hardwareMap.get(DcMotorEx.class, "leftPelvis");
-        launch = hardwareMap.get(DcMotorEx.class, "launch");
-
-
-        // TODO: set up the motors with forward and reverse
+                // Initializing the Motors to the correct entry
+                pickUp = hardwareMap.get(DcMotor.class,"pickUp");
+                rightPelvis = hardwareMap.get(DcMotorEx.class, "rightPelvis");
+                leftPelvis = hardwareMap.get(DcMotorEx.class, "leftPelvis");
+                launch = hardwareMap.get(DcMotorEx.class, "launch");
 
 
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
+
+
+                // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        LBMotor.setDirection(DcMotor.Direction.REVERSE);
-        RBMotor.setDirection(DcMotor.Direction.REVERSE);
-        LFMotor.setDirection(DcMotor.Direction.REVERSE);
-        RFMotor.setDirection(DcMotor.Direction.FORWARD);
+        LBMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        RBMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        LFMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        RFMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         // Directions for the throwing motors
-        leftPelvis.setDirection(DcMotorEx.Direction.REVERSE);
-        rightPelvis.setDirection(DcMotorEx.Direction.FORWARD);
-        launch.setDirection(DcMotorEx.Direction.REVERSE);
-        pickUp.setDirection(DcMotor.Direction.REVERSE);
+        leftPelvis.setDirection(DcMotorEx.Direction.FORWARD);
+        rightPelvis.setDirection(DcMotorEx.Direction.REVERSE);
+        pickUp.setDirection(DcMotorEx.Direction.REVERSE);
 
 
         leftPelvis.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         rightPelvis.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         leftPelvis.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         rightPelvis.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
+        leftPelvis.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightPelvis.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        launch.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         launch.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         launch.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
-        leftPelvis.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightPelvis.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        launch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -148,75 +144,37 @@ public class Jack extends OpMode
     @Override
     public void loop() {
         // Setup a variable for each drive wheel to save power level for telemetry
-        double LBPower;
-        double RBPower;
-        double LFPower;
-        double RFPower;
-
-        // Declaring power for the pushy thing
-        double outtakePower = -gamepad2.left_stick_y;
-        double intakePower;
-
 
         double pelvisInput = gamepad2.left_stick_y;
+        double intakePower = gamepad2.right_stick_y;
 
-            // Scale to your desired maximum velocity
-            double maxPelvisVelocity = 2500; // This is now your actual max speed
-            double maxLaunchVelocity = 1500;
-            double targetVelocity = pelvisInput * maxPelvisVelocity;
-            double targetVelocityCenter = pelvisInput * maxPelvisVelocity;
-
-
-            leftPelvis.setVelocity(targetVelocity);
-            rightPelvis.setVelocity(targetVelocity);
-
-
-
-
-
-
-
+        // Scale to your desired maximum velocity
+       // This is now your actual max speed
+        double maxLaunchVelocity = 2500;
+        double targetVelocity = pelvisInput * maxLaunchVelocity;
 
         double drive = -gamepad1.left_stick_y;
         double strafe = gamepad1.right_trigger - gamepad1.left_trigger;
-        //double strafe = gamepad1.left_stick_x;`
+        //double strafe = gamepad1.left_stick_x;
         double twist = gamepad1.right_stick_x;
+        double BasePower = 2500;
 
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
-        // TODO: Fix this stupid disgusting bullshit code
-
-
-
-
-
-
-        //separate intake from outtake
-        intakePower = -gamepad2.right_stick_y;
-
-        pickUp.setPower(intakePower);
-        launch.setVelocity(targetVelocityCenter);
-
-
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
-        // TODO: Set up PID for accurate movement
         // TODO: Set up classes for everything
 
-        // Tank Mode uses one stick to control each wheel.
-        // - This requires no math, but it is hard to drive forward slowly and keep straight.
-        // leftPower  = -gamepad1.left_stick_y ;
-        // rightPower = -gamepad1.right_stick_y ;
-        LFPower = Range.clip(drive + strafe + twist, -1.0, 1.0);
-        RFPower = Range.clip(drive - strafe - twist, -1.0, 1.0);
-        LBPower = Range.clip(drive - strafe + twist, -1.0, 1.0);
-        RBPower = Range.clip(drive + strafe - twist, -1.0, 1.0);
+        double LFPower = Range.clip(drive + strafe + twist, -1.0, 1.0);
+        double RFPower = Range.clip(drive - strafe - twist, -1.0, 1.0);
+        double LBPower = Range.clip(drive - strafe + twist, -1.0, 1.0);
+        double RBPower = Range.clip(drive + strafe - twist, -1.0, 1.0);
 
+        LFMotor.setVelocity(LFPower*BasePower);
+        RFMotor.setVelocity(RFPower*BasePower);
+        LBMotor.setVelocity(LBPower*BasePower);
+        RBMotor.setVelocity(RBPower*BasePower);
 
-        LFMotor.setPower(LFPower);
-        RFMotor.setPower(RFPower);
-        LBMotor.setPower(LBPower);
-        RBMotor.setPower(RBPower);
+        leftPelvis.setVelocity(targetVelocity);
+        rightPelvis.setVelocity(targetVelocity);
+        launch.setVelocity(targetVelocity);
+        pickUp.setPower(intakePower);
 
 
         // Show the elapsed game time and wheel power.
@@ -233,5 +191,4 @@ public class Jack extends OpMode
     @Override
     public void stop() {
     }
-
 }
