@@ -19,7 +19,7 @@ public class DriveTrain {
     // === Drive tuning ===
     private final double deadband = 0.05;     // joystick deadzone
     private final double strafeScale = 1.05;  // slightly boost strafe if needed
-    private final double rampRate = 0.08;     // max power change per update (simple slew)
+    private final double rampRate = 0.25;     // max power change per update (simple slew)
 
     // === Heading hold variables ===
     private boolean headingLock = false;
