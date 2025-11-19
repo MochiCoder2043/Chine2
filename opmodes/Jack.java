@@ -1,83 +1,50 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.AprilTagDetector;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.hardware.Pelvis;
 
-
-@TeleOp(name="Jack", group="Iterative OpMode")
+@TeleOp(name = "Jack", group = "Main")
 public class Jack extends OpMode {
 
-    private Pelvis pelvis = new Pelvis();
-    AprilTagDetector detector = new AprilTagDetector();
-    private ElapsedTime runtime = new ElapsedTime();
-
-    private DriveTrain drive = new DriveTrain(this);
-
-
-
+    private DriveTrain drive;
+    private final ElapsedTime runtime = new ElapsedTime();
+    private double lastLoopTimeSec = 0.0;
 
     @Override
     public void init() {
-
+        drive = new DriveTrain();
         drive.init(hardwareMap);
-        pelvis.init(hardwareMap);
-        detector.init(hardwareMap);
-
-        telemetry.addLine("DriveTrain initialized");
-
-    }
-
-    @Override
-    public void start() {
-        telemetry.addLine("Starting TeleOp");
+        telemetry.addLine("Drive initialized");
         telemetry.update();
+        lastLoopTimeSec = runtime.seconds();
     }
 
     @Override
     public void loop() {
+        // calculate dt (seconds) and now ms
+        double nowSec = runtime.seconds();
+        double dt = nowSec - lastLoopTimeSec;
+        if (dt <= 0) dt = 0.001;
+        lastLoopTimeSec = nowSec;
 
-        // Gamepad inputs for the chasis movement
+        double nowMs = runtime.milliseconds();
 
-        // Drivetrain input
-        double y = -gamepad1.left_stick_y; // forward/back
-        double x = (gamepad1.right_trigger - gamepad1.left_trigger) * 1.1; // strafe (boosted)
-        double turn = gamepad1.right_stick_x;   // turning power
+        // read gamepad
+        double forward = -gamepad1.left_stick_y;   // forward positive
+        double strafe  =  gamepad1.right_trigger - gamepad1.left_trigger;   // right positive
+        double turn    =  gamepad1.right_stick_x;  // clockwise positive
 
-        // Toggle heading lock (press X)
-        boolean lock = gamepad1.x;
+        boolean lockBtn = gamepad1.x; // press X to toggle heading lock
 
+        // feed into drivetrain (non-blocking)
+        drive.drive(forward, strafe, turn, lockBtn, nowMs, dt);
 
-        // Gamepad inputs for throwing the ball
-        double pelvisInput = gamepad2.left_stick_y;
-        double intakePower = gamepad2.right_stick_y;
-
-        drive.drive(x, y, turn, lock);
-        pelvis.launch(pelvisInput, intakePower);
-        AprilTagDetector.TagResult tag = detector.getResult();
-
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Drive", drive.getStatus());
-        telemetry.addData("Pelvis", pelvis.getStatus());
-        // april tag data
-        telemetry.addData("Found", tag.found);
-        telemetry.addData("ID", tag.id);
-        telemetry.addData("X", tag.x);
-        telemetry.addData("Y", tag.y);
-        telemetry.addData("Z", tag.z);
-        telemetry.addData("Yaw", tag.yaw);
-        telemetry.addData("Pitch", tag.pitch);
-        telemetry.addData("Roll", tag.roll);
-
+        // telemetry (small, useful)
+        telemetry.addData("Heading", String.format("%.1f", drive.getRawHeading()));
+        telemetry.addData("Status", drive.getStatus());
         telemetry.update();
-
     }
 }
