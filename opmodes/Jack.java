@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.AprilTagDetector;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Pelvis;
@@ -13,10 +16,14 @@ import org.firstinspires.ftc.teamcode.hardware.Pelvis;
 @TeleOp(name="Jack", group="Iterative OpMode")
 public class Jack extends OpMode {
 
-    private DriveTrain drive = new DriveTrain();
     private Pelvis pelvis = new Pelvis();
     AprilTagDetector detector = new AprilTagDetector();
     private ElapsedTime runtime = new ElapsedTime();
+
+    private DriveTrain drive = new DriveTrain(this);
+
+
+
 
     @Override
     public void init() {
@@ -24,6 +31,7 @@ public class Jack extends OpMode {
         drive.init(hardwareMap);
         pelvis.init(hardwareMap);
         detector.init(hardwareMap);
+
         telemetry.addLine("DriveTrain initialized");
 
     }
@@ -38,15 +46,21 @@ public class Jack extends OpMode {
     public void loop() {
 
         // Gamepad inputs for the chasis movement
-        double power = -gamepad1.left_stick_y;
-        double strafe = gamepad1.right_trigger - gamepad1.left_trigger;
-        double twist = gamepad1.right_stick_x;
+
+        // Drivetrain input
+        double y = -gamepad1.left_stick_y; // forward/back
+        double x = (gamepad1.right_trigger - gamepad1.left_trigger) * 1.1; // strafe (boosted)
+        double turn = gamepad1.right_stick_x;   // turning power
+
+        // Toggle heading lock (press X)
+        boolean lock = gamepad1.x;
+
 
         // Gamepad inputs for throwing the ball
         double pelvisInput = gamepad2.left_stick_y;
         double intakePower = gamepad2.right_stick_y;
 
-        drive.drive(power, strafe, twist);
+        drive.drive(x, y, turn, lock);
         pelvis.launch(pelvisInput, intakePower);
         AprilTagDetector.TagResult tag = detector.getResult();
 
