@@ -124,13 +124,13 @@ public class auto extends LinearOpMode {
         RFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         // SECOND MOVE - 2000 ticks
-        RFMotor.setTargetPosition(2000);
-        RBMotor.setTargetPosition(2000);
-        LFMotor.setTargetPosition(-2000);
-        LBMotor.setTargetPosition(-2000);
+        RFMotor.setTargetPosition(500);
+        RBMotor.setTargetPosition(500);
+        LFMotor.setTargetPosition(-500);
+        LBMotor.setTargetPosition(-500);
 
-        RFMotor.setPower(0.25);
-        RBMotor.setPower(0.25);
+        RFMotor.setPower(0.5);
+        RBMotor.setPower(0.5);
         LFMotor.setPower(-0.5);
         LBMotor.setPower(-0.5);
 
@@ -145,6 +145,67 @@ public class auto extends LinearOpMode {
         LFMotor.setPower(0);
         RBMotor.setPower(0);
         RFMotor.setPower(0);
+
+        // RESET ENCODERS FOR SECOND MOVE
+        LBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        LFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        RBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        RFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        // SET MODES BACK TO RUN_TO_POSITION
+        LBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        LFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        RBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        RFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        // THIRD MOVE - 500 ticks
+        RFMotor.setTargetPosition(500);
+        RBMotor.setTargetPosition(500);
+        LFMotor.setTargetPosition(500);
+        LBMotor.setTargetPosition(500);
+
+        RFMotor.setPower(0.5);
+        RBMotor.setPower(0.5);
+        LFMotor.setPower(0.5);
+        LBMotor.setPower(0.5);
+
+        // WAIT FOR THIRD MOVE TO COMPLETE (FIXED - no Thread.sleep)
+        while (opModeIsActive() &&
+                (LBMotor.isBusy() || LFMotor.isBusy() || RBMotor.isBusy() || RFMotor.isBusy())) {
+            // Wait for motors to reach target position
+        }
+
+        // STOP MOTORS
+        LBMotor.setPower(0);
+        LFMotor.setPower(0);
+        RBMotor.setPower(0);
+        RFMotor.setPower(0);
+
+        // START PELVIS AND LAUNCH MOTORS AT 2500 VELOCITY
+        leftPelvis.setVelocity(-2500);
+        rightPelvis.setVelocity(-2500);
+        launch.setVelocity(-2500);
+
+        // WAIT FOR 3 SECONDS WHILE PELVIS/LAUNCH ACCELERATE
+        runtime.reset();
+        while (opModeIsActive() && runtime.seconds() < 3.0) {
+            // Just wait for 3 seconds
+        }
+
+        // START PICKUP MOTOR AT 2500 VELOCITY
+        pickUp.setVelocity(-2500);
+
+        // WAIT FOR 1 SECOND WHILE PICKUP ACCELERATES
+        runtime.reset();
+        while (opModeIsActive() && runtime.seconds() < 1.0) {
+            // Just wait for 1 second
+        }
+
+        // STOP ALL MOTORS
+        leftPelvis.setVelocity(0);
+        rightPelvis.setVelocity(0);
+        launch.setVelocity(0);
+        pickUp.setVelocity(0);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
