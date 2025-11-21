@@ -30,12 +30,10 @@ package org.firstinspires.ftc.teamcode;
  */
 
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -53,8 +51,8 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Jack", group="Iterative OpMode")
-public class Jack extends OpMode
+@TeleOp(name="Jacktoño", group="Iterative OpMode")
+public class Jacktoño extends OpMode
 {
         // Declare OpMode members.
         private ElapsedTime runtime = new ElapsedTime();
@@ -65,7 +63,7 @@ public class Jack extends OpMode
 
         // The motors for the ball throwing bloody thing
         // TODO: Read documentation to change to ideal motor for speed
-        private DcMotor pickUp = null;
+        private DcMotorEx pickUp = null;
         private DcMotorEx launch = null;
 
         // You are not allowed to judge I am sleep deprived
@@ -87,7 +85,7 @@ public class Jack extends OpMode
                 RFMotor  = hardwareMap.get(DcMotorEx.class, "RFMotor");
 
                 // Initializing the Motors to the correct entry
-                pickUp = hardwareMap.get(DcMotor.class,"pickUp");
+                pickUp = hardwareMap.get(DcMotorEx.class,"pickUp");
                 rightPelvis = hardwareMap.get(DcMotorEx.class, "rightPelvis");
                 leftPelvis = hardwareMap.get(DcMotorEx.class, "leftPelvis");
                 launch = hardwareMap.get(DcMotorEx.class, "launch");
@@ -106,8 +104,11 @@ public class Jack extends OpMode
         // Directions for the throwing motors
         leftPelvis.setDirection(DcMotorEx.Direction.FORWARD);
         rightPelvis.setDirection(DcMotorEx.Direction.REVERSE);
-        pickUp.setDirection(DcMotorEx.Direction.REVERSE);
 
+        pickUp.setDirection(DcMotorEx.Direction.REVERSE);
+        pickUp.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        pickUp.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        pickUp.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         leftPelvis.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         rightPelvis.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -119,7 +120,22 @@ public class Jack extends OpMode
         launch.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         launch.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        // Tell the driver that initialization is complete.
+        LBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        LFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        RBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        RFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        LBMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        LFMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        RBMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        RFMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+
+
+
+
+
+            // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
 
@@ -145,12 +161,15 @@ public class Jack extends OpMode
     public void loop() {
         // Setup a variable for each drive wheel to save power level for telemetry
 
+        double inVel = 2500;
         double pelvisInput = gamepad2.left_stick_y;
-        double intakePower = gamepad2.right_stick_y;
+        double intakePower = gamepad2.right_stick_y*inVel;
 
         // Scale to your desired maximum velocity
        // This is now your actual max speed
-        double maxLaunchVelocity = 2500;
+
+        double maxLaunchVelocity = 3000;
+
         double targetVelocity = pelvisInput * maxLaunchVelocity;
 
         double drive = -gamepad1.left_stick_y;
@@ -174,7 +193,7 @@ public class Jack extends OpMode
         leftPelvis.setVelocity(targetVelocity);
         rightPelvis.setVelocity(targetVelocity);
         launch.setVelocity(targetVelocity);
-        pickUp.setPower(intakePower);
+        pickUp.setVelocity(intakePower);
 
 
         // Show the elapsed game time and wheel power.
