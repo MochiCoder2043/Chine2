@@ -207,6 +207,65 @@ public class auto extends LinearOpMode {
         launch.setVelocity(0);
         pickUp.setVelocity(0);
 
+        // RESET ENCODERS FOR SECOND MOVE
+        LBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        LFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        RBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        RFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        // SET MODES BACK TO RUN_TO_POSITION
+        LBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        LFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        RBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        RFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        // THIRD MOVE - 500 ticks
+        RFMotor.setTargetPosition(-500);
+        RBMotor.setTargetPosition(-500);
+        LFMotor.setTargetPosition(-500);
+        LBMotor.setTargetPosition(-500);
+
+        RFMotor.setPower(-0.5);
+        RBMotor.setPower(-0.5);
+        LFMotor.setPower(-0.5);
+        LBMotor.setPower(-0.5);
+
+        while (opModeIsActive() &&
+                (LBMotor.isBusy() || LFMotor.isBusy() || RBMotor.isBusy() || RFMotor.isBusy())) {
+            // Wait for motors to reach target position
+        }
+
+        // STOP MOTORS
+        LBMotor.setPower(0);
+        LFMotor.setPower(0);
+        RBMotor.setPower(0);
+        RFMotor.setPower(0);
+
+        // RESET ENCODERS FOR SECOND MOVE
+        LBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        LFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        RBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        RFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        // SET MODES BACK TO RUN_TO_POSITION
+        LBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        LFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        RBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        RFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        // SECOND MOVE - 2000 ticks
+        RFMotor.setTargetPosition(-500);
+        RBMotor.setTargetPosition(-500);
+        LFMotor.setTargetPosition(500);
+        LBMotor.setTargetPosition(500);
+
+        RFMotor.setPower(-0.5);
+        RBMotor.setPower(-0.5);
+        LFMotor.setPower(0.5);
+        LBMotor.setPower(0.5);
+
+
+
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
