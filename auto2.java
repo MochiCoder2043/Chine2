@@ -166,7 +166,7 @@ public class auto2 extends LinearOpMode {
             // Just wait for 1 second
         }
 
-        // STOP ALL MOTORS
+        // STOP ALL MOTORS s
         leftPelvis.setVelocity(0);
         rightPelvis.setVelocity(0);
         launch.setVelocity(0);
