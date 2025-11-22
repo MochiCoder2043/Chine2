@@ -2,12 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="auto", group="auto")
-public class auto extends LinearOpMode {
+@Autonomous(name="auto-red-B", group="auto-red")
+public class autoRedB extends LinearOpMode {
 
     /* Declare OpMode members. */
 
@@ -71,8 +70,6 @@ public class auto extends LinearOpMode {
         RBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         RFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-
-
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at", "%7d :%7d",
                 LBMotor.getCurrentPosition(),
@@ -86,10 +83,10 @@ public class auto extends LinearOpMode {
         waitForStart();
 
         // FIRST MOVE - 1000 ticks
-        RFMotor.setTargetPosition(2000);
-        RBMotor.setTargetPosition(2000);
-        LFMotor.setTargetPosition(2000);
-        LBMotor.setTargetPosition(2000);
+        RFMotor.setTargetPosition(1000);
+        RBMotor.setTargetPosition(1000);
+        LFMotor.setTargetPosition(1000);
+        LBMotor.setTargetPosition(1000);
 
         LBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         LFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
@@ -126,10 +123,10 @@ public class auto extends LinearOpMode {
         RFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         // SECOND MOVE - 2000 ticks
-        RFMotor.setTargetPosition(300);
-        RBMotor.setTargetPosition(300);
-        LFMotor.setTargetPosition(-300);
-        LBMotor.setTargetPosition(-300);
+        RFMotor.setTargetPosition(950);
+        RBMotor.setTargetPosition(950);
+        LFMotor.setTargetPosition(-950);
+        LBMotor.setTargetPosition(-950);
 
         RFMotor.setPower(0.5);
         RBMotor.setPower(0.5);
@@ -137,41 +134,6 @@ public class auto extends LinearOpMode {
         LBMotor.setPower(-0.5);
 
         // WAIT FOR SECOND MOVE TO COMPLETE (FIXED - no Thread.sleep)
-        while (opModeIsActive() &&
-                (LBMotor.isBusy() || LFMotor.isBusy() || RBMotor.isBusy() || RFMotor.isBusy())) {
-            // Wait for motors to reach target position
-        }
-
-        // STOP MOTORS
-        LBMotor.setPower(0);
-        LFMotor.setPower(0);
-        RBMotor.setPower(0);
-        RFMotor.setPower(0);
-
-        // RESET ENCODERS FOR SECOND MOVE
-        LBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        LFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        RBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        RFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-
-        // SET MODES BACK TO RUN_TO_POSITION
-        LBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        LFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        RBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        RFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-        // THIRD MOVE - 500 ticks
-        RFMotor.setTargetPosition(1000);
-        RBMotor.setTargetPosition(1000);
-        LFMotor.setTargetPosition(1000);
-        LBMotor.setTargetPosition(1000);
-
-        RFMotor.setPower(0.5);
-        RBMotor.setPower(0.5);
-        LFMotor.setPower(0.5);
-        LBMotor.setPower(0.5);
-
-        // WAIT FOR THIRD MOVE TO COMPLETE (FIXED - no Thread.sleep)
         while (opModeIsActive() &&
                 (LBMotor.isBusy() || LFMotor.isBusy() || RBMotor.isBusy() || RFMotor.isBusy())) {
             // Wait for motors to reach target position
@@ -209,68 +171,9 @@ public class auto extends LinearOpMode {
         launch.setVelocity(0);
         pickUp.setVelocity(0);
 
-        // RESET ENCODERS FOR SECOND MOVE
-        LBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        LFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        RBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        RFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-
-        // SET MODES BACK TO RUN_TO_POSITION
-        LBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        LFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        RBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        RFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-        // THIRD MOVE - 500 ticks
-        RFMotor.setTargetPosition(-500);
-        RBMotor.setTargetPosition(-500);
-        LFMotor.setTargetPosition(-500);
-        LBMotor.setTargetPosition(-500);
-
-        RFMotor.setPower(-0.5);
-        RBMotor.setPower(-0.5);
-        LFMotor.setPower(-0.5);
-        LBMotor.setPower(-0.5);
-
-        while (opModeIsActive() &&
-                (LBMotor.isBusy() || LFMotor.isBusy() || RBMotor.isBusy() || RFMotor.isBusy())) {
-            // Wait for motors to reach target position
-        }
-
-        // STOP MOTORS
-        LBMotor.setPower(0);
-        LFMotor.setPower(0);
-        RBMotor.setPower(0);
-        RFMotor.setPower(0);
-
-        // RESET ENCODERS FOR SECOND MOVE
-        LBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        LFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        RBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        RFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-
-        // SET MODES BACK TO RUN_TO_POSITION
-        LBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        LFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        RBMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        RFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-        // SECOND MOVE - 2000 ticks
-        RFMotor.setTargetPosition(-500);
-        RBMotor.setTargetPosition(-500);
-        LFMotor.setTargetPosition(500);
-        LBMotor.setTargetPosition(500);
-
-        RFMotor.setPower(-0.5);
-        RBMotor.setPower(-0.5);
-        LFMotor.setPower(0.5);
-        LBMotor.setPower(0.5);
-
-
-
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
-
-
 }
+
+
