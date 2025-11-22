@@ -125,10 +125,10 @@ public class autoRedA extends LinearOpMode {
         RFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         // SECOND MOVE - 2000 ticks
-        RFMotor.setTargetPosition(-300);
-        RBMotor.setTargetPosition(-300);
-        LFMotor.setTargetPosition(300);
-        LBMotor.setTargetPosition(300);
+        RFMotor.setTargetPosition(-275);
+        RBMotor.setTargetPosition(-275);
+        LFMotor.setTargetPosition(275);
+        LBMotor.setTargetPosition(275);
 
         RFMotor.setPower(-0.5);
         RBMotor.setPower(-0.5);
@@ -160,10 +160,10 @@ public class autoRedA extends LinearOpMode {
         RFMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         // THIRD MOVE - 500 ticks
-        RFMotor.setTargetPosition(1000);
-        RBMotor.setTargetPosition(1000);
-        LFMotor.setTargetPosition(1000);
-        LBMotor.setTargetPosition(1000);
+        RFMotor.setTargetPosition(1050);
+        RBMotor.setTargetPosition(1050);
+        LFMotor.setTargetPosition(1050);
+        LBMotor.setTargetPosition(1050);
 
         RFMotor.setPower(0.5);
         RBMotor.setPower(0.5);
@@ -183,13 +183,13 @@ public class autoRedA extends LinearOpMode {
         RFMotor.setPower(0);
 
         // START PELVIS AND LAUNCH MOTORS AT 2500 VELOCITY
-        leftPelvis.setVelocity(-2000);
-        rightPelvis.setVelocity(-2000);
-        launch.setVelocity(-2000);
+        leftPelvis.setVelocity(-1800);
+        rightPelvis.setVelocity(-1800);
+        launch.setVelocity(-1800);
 
         // WAIT FOR 3 SECONDS WHILE PELVIS/LAUNCH ACCELERATE
         runtime.reset();
-        while (opModeIsActive() && runtime.seconds() < 1.5) {
+        while (opModeIsActive() && runtime.seconds() < 2.0) {
             // Just wait for 3 seconds
         }
 
