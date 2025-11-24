@@ -168,7 +168,7 @@ public class Jacktoño extends OpMode
         // Scale to your desired maximum velocity
        // This is now your actual max speed
 
-        double maxLaunchVelocity = 3000;
+        double maxLaunchVelocity = 2750;
 
         double targetVelocity = pelvisInput * maxLaunchVelocity;
 
