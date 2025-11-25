@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Jacktoño", group="Iterative OpMode")
+@TeleOp(name="Jag", group="Iterative OpMode")
 public class Jacktoño extends OpMode
 {
         // Declare OpMode members.
@@ -130,8 +130,10 @@ public class Jacktoño extends OpMode
         RBMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         RFMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-
-
+        LBMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        RBMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        LFMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        RFMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
 
 
@@ -168,7 +170,7 @@ public class Jacktoño extends OpMode
         // Scale to your desired maximum velocity
        // This is now your actual max speed
 
-        double maxLaunchVelocity = 2750;
+        double maxLaunchVelocity = 2500;
 
         double targetVelocity = pelvisInput * maxLaunchVelocity;
 
