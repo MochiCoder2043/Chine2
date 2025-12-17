@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -64,7 +65,7 @@ public class Jacktoño extends OpMode
         // The motors for the ball throwing bloody thing
         // TODO: Read documentation to change to ideal motor for speed
         private DcMotorEx pickUp = null;
-        private DcMotorEx launch = null;
+        private DcMotorEx inter = null;
 
         // You are not allowed to judge I am sleep deprived
         private DcMotorEx rightPelvis = null;
@@ -88,7 +89,7 @@ public class Jacktoño extends OpMode
                 pickUp = hardwareMap.get(DcMotorEx.class,"pickUp");
                 rightPelvis = hardwareMap.get(DcMotorEx.class, "rightPelvis");
                 leftPelvis = hardwareMap.get(DcMotorEx.class, "leftPelvis");
-                launch = hardwareMap.get(DcMotorEx.class, "launch");
+                inter = hardwareMap.get(DcMotorEx.class, "launch");
 
 
 
@@ -105,7 +106,7 @@ public class Jacktoño extends OpMode
         leftPelvis.setDirection(DcMotorEx.Direction.FORWARD);
         rightPelvis.setDirection(DcMotorEx.Direction.REVERSE);
 
-        pickUp.setDirection(DcMotorEx.Direction.REVERSE);
+        pickUp.setDirection(DcMotorEx.Direction.FORWARD);
         pickUp.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         pickUp.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         pickUp.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -116,9 +117,10 @@ public class Jacktoño extends OpMode
         rightPelvis.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         leftPelvis.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightPelvis.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        launch.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        launch.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        launch.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        inter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        inter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        inter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        inter.setDirection(DcMotorSimple.Direction.REVERSE);
 
         LBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         LFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -163,14 +165,16 @@ public class Jacktoño extends OpMode
     public void loop() {
         // Setup a variable for each drive wheel to save power level for telemetry
 
-        double inVel = 2500;
+        double inVel = 2000;
+        double interVel = 1250;
         double pelvisInput = gamepad2.left_stick_y;
-        double intakePower = gamepad2.right_stick_y*inVel;
+        double intakePower = (gamepad2.right_trigger-gamepad2.right_stick_y)*inVel;
+        double interTarget = (gamepad2.left_trigger-gamepad2.right_stick_y)*interVel;
 
         // Scale to your desired maximum velocity
        // This is now your actual max speed
 
-        double maxLaunchVelocity = 2500;
+        double maxLaunchVelocity = 1600;
 
         double targetVelocity = pelvisInput * maxLaunchVelocity;
 
@@ -194,7 +198,7 @@ public class Jacktoño extends OpMode
 
         leftPelvis.setVelocity(targetVelocity);
         rightPelvis.setVelocity(targetVelocity);
-        launch.setVelocity(targetVelocity);
+        inter.setVelocity(interTarget);
         pickUp.setVelocity(intakePower);
 
 

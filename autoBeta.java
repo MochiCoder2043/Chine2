@@ -83,12 +83,11 @@ public class autoBeta extends LinearOpMode {
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
     static final double     COUNTS_PER_MOTOR_REV    = 28 ;
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
-    static final double     WHEEL_DIAMETER_CM   = 8.0 ;     // For figuring circumference
+    static final double     DRIVE_GEAR_REDUCTION    = 12.0 ;     // No External Gearing.
+    static final double     WHEEL_DIAMETER_CM   = 7.5;     // For figuring circumference
     static final double     COUNTS_PER_CM         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_CM * 3.1415);
-    static final double     DRIVE_SPEED             = 0.6;
-    static final double     TURN_SPEED              = 0.5;
+
 
     @Override
     public void runOpMode() {
@@ -153,6 +152,7 @@ public class autoBeta extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         encoderDrive(0.5, 100, 0, 0, 5);
+        encoderDrive(0.5,0, 50, 0, 5);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
