@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -70,7 +71,7 @@ public class autoBeta extends LinearOpMode {
     private DcMotorEx LFMotor = null;
     private DcMotorEx RFMotor = null;
     private DcMotorEx pickUp = null;
-    private DcMotorEx launch = null;
+    private DcMotorEx inter = null;
 
     // You are not allowed to judge I am sleep deprived
     private DcMotorEx rightPelvis = null;
@@ -102,7 +103,7 @@ public class autoBeta extends LinearOpMode {
         pickUp = hardwareMap.get(DcMotorEx.class, "pickUp");
         rightPelvis = hardwareMap.get(DcMotorEx.class, "rightPelvis");
         leftPelvis = hardwareMap.get(DcMotorEx.class, "leftPelvis");
-        launch = hardwareMap.get(DcMotorEx.class, "launch");
+        inter = hardwareMap.get(DcMotorEx.class, "launch");
 
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -114,10 +115,10 @@ public class autoBeta extends LinearOpMode {
         RFMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         // Directions for the throwing motors
-        leftPelvis.setDirection(DcMotorEx.Direction.FORWARD);
-        rightPelvis.setDirection(DcMotorEx.Direction.REVERSE);
+        leftPelvis.setDirection(DcMotorEx.Direction.REVERSE);
+        rightPelvis.setDirection(DcMotorEx.Direction.FORWARD);
 
-        pickUp.setDirection(DcMotorEx.Direction.REVERSE);
+        pickUp.setDirection(DcMotorEx.Direction.FORWARD);
         pickUp.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         pickUp.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         pickUp.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -128,9 +129,12 @@ public class autoBeta extends LinearOpMode {
         rightPelvis.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         leftPelvis.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightPelvis.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        launch.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        launch.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        launch.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        inter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        inter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        inter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        inter.setDirection(DcMotorEx.Direction.REVERSE);
+
 
         LBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         LFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -145,14 +149,40 @@ public class autoBeta extends LinearOpMode {
                 RFMotor.getCurrentPosition());
 
         telemetry.update();
+        double inVel = 2500;
+        double interVel = 1250;
+        double maxLaunchVelocity = 1600;
 
         // Wait for the game to start (driver presses START)
         waitForStart();
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(0.5, 100, 0, 0, 5);
-        encoderDrive(0.5,0, 50, 0, 5);
+        encoderDrive(0.5, 163, 0, 0, 10);
+        encoderDrive(0.5,0, 0, 26.5, 10);
+        encoderDrive(0.5, 20, 0, 0, 15);
+        leftPelvis.setVelocity(maxLaunchVelocity);
+        rightPelvis.setVelocity(maxLaunchVelocity);
+        waitS(2.5);
+        inter.setVelocity(interVel);
+        waitS(1.5);
+        pickUp.setVelocity(inVel);
+        waitS(5);
+        pickUp.setVelocity(0);
+        inter.setVelocity(0);
+        leftPelvis.setVelocity(0);
+        rightPelvis.setVelocity(0);
+        encoderDrive(-0.5, 0, 0, -70, 15);
+        encoderDrive(-0.5, 0, -45, 0, 15);
+        pickUp.setVelocity(inVel);
+        inter.setVelocity(interVel);
+        encoderDrive(-0.25, -55, 0, 0, 15);
+        waitS(5);
+        pickUp.setVelocity(0);
+        inter.setVelocity(0);
+
+
+
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -235,6 +265,12 @@ public class autoBeta extends LinearOpMode {
             RFMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
             sleep(250);   // optional pause after each move.
+        }
+    }
+    public void waitS(double timeS){
+        runtime.reset();
+        while (opModeIsActive() && runtime.seconds() < timeS) {
+            // Just wait for 1 second
         }
     }
 }
